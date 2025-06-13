@@ -1,12 +1,15 @@
-import hydra
-from omegaconf import DictConfig
-from sklearn.metrics import f1_score, roc_auc_score, precision_score, recall_score
-import joblib
-from baseline.model import build_pipeline
-from preprocessing import preprocess
-import pandas as pd
-from pathlib import Path
 import json
+from pathlib import Path
+
+import hydra
+import joblib
+import pandas as pd
+import sklearn.metrics as m
+from baseline.model import build_pipeline
+from omegaconf import DictConfig
+
+CONFIG = "../../configs"
+
 
 def filter_for_binary_classification(records):
     filtered = []
@@ -20,7 +23,7 @@ def filter_for_binary_classification(records):
     return filtered
 
 
-@hydra.main(config_path="../../configs", config_name="baseline", version_base="1.3")
+@hydra.main(config_path=CONFIG, config_name="baseline", version_base="1.3")
 def train(cfg: DictConfig):
     with open(cfg.data.train, "r", encoding="utf-8") as f:
         train = [json.loads(line) for line in f]
@@ -31,15 +34,15 @@ def train(cfg: DictConfig):
         val = [json.loads(line) for line in f]
         val = filter_for_binary_classification(val)
 
-    val_df = pd.DataFrame(val)   
+    val_df = pd.DataFrame(val)
     model = build_pipeline(cfg)
     model.fit(train_df["text"], train_df["target"])
     preds = model.predict(val_df["text"])
     probas = model.predict_proba(val_df["text"])[:, 1]
-    f1 = f1_score(val_df["target"], preds, average="binary")
-    pr = precision_score(val_df["target"], preds, average="binary")
-    re = recall_score(val_df["target"], preds, average="binary")
-    auc = roc_auc_score(val_df["target"], probas)
+    f1 = m.f1_score(val_df["target"], preds, average="binary")
+    pr = m.precision_score(val_df["target"], preds, average="binary")
+    re = m.recall_score(val_df["target"], preds, average="binary")
+    auc = m.roc_auc_score(val_df["target"], probas)
     print(f"F1: {f1:.4f}, AUC: {auc:.4f}, pr: {pr:.4f}, re: {re:.4f}")
     joblib.dump(model, Path(cfg.model.output_path) / "model.joblib")
 

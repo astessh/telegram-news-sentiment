@@ -1,9 +1,13 @@
-import re
 import json
+import re
 from pathlib import Path
-from omegaconf import DictConfig
+
 import hydra
+from omegaconf import DictConfig
 from sklearn.model_selection import train_test_split
+
+CONFIG = "../configs"
+
 
 def clean_text(text: str, cfg) -> str:
     if cfg.lowercase:
@@ -16,28 +20,38 @@ def clean_text(text: str, cfg) -> str:
         text = re.sub(r"\d+", "", text)
     return text
 
+
 def tokenize(text: str, method: str) -> list:
     if method == "simple_split":
         return text.split()
     elif method == "nltk":
         import nltk
+
         nltk.download("punkt")
         from nltk.tokenize import word_tokenize
+
         return word_tokenize(text)
     else:
         raise ValueError(f"Unknown tokenization method: {method}")
 
+
 def stratified_split(data, test_size, val_size, seed):
     train_val, test = train_test_split(
-        data, test_size=test_size, stratify=[r["target"] for r in data], random_state=seed
+        data,
+        test_size=test_size,
+        stratify=[r["target"] for r in data],
+        random_state=seed,
     )
     train, val = train_test_split(
-        train_val, test_size=val_size / (1 - test_size),
-        stratify=[r["target"] for r in train_val], random_state=seed
+        train_val,
+        test_size=val_size / (1 - test_size),
+        stratify=[r["target"] for r in train_val],
+        random_state=seed,
     )
     return train, val, test
 
-@hydra.main(config_path="../configs", config_name="preprocessing", version_base=None)
+
+@hydra.main(config_path=CONFIG, config_name="preprocessing", version_base=None)
 def preprocess(cfg: DictConfig):
     input_path = Path(cfg.input_path)
     output_dir = Path(cfg.output_path)
@@ -50,7 +64,9 @@ def preprocess(cfg: DictConfig):
         text = clean_text(r["text"], cfg.text_cleaning)
         r["tokens"] = tokenize(text, cfg.tokenization.method)
 
-    train, val, test = stratified_split(records, cfg.split.test_size, cfg.split.val_size, cfg.seed)
+    train, val, test = stratified_split(
+        records, cfg.split.test_size, cfg.split.val_size, cfg.seed
+    )
 
     for name, subset in zip(["train", "val", "test"], [train, val, test]):
         out_file = output_dir / f"{name}.json"
@@ -58,6 +74,7 @@ def preprocess(cfg: DictConfig):
             for r in subset:
                 json.dump(r, f, ensure_ascii=False)
                 f.write("\n")
+
 
 if __name__ == "__main__":
     preprocess()

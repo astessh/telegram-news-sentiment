@@ -1,9 +1,8 @@
 import hydra
-from omegaconf import DictConfig
-from models.qwen_module import QwenPTuningModule
 import pytorch_lightning as pl
-from datasets import load_dataset, Value
-
+from datasets import Value, load_dataset
+from models.qwen_module import QwenPTuningModule
+from omegaconf import DictConfig
 
 
 @hydra.main(config_path="../../configs", config_name="qwen", version_base=None)
@@ -17,6 +16,7 @@ def train_qwen(cfg: DictConfig):
     model = QwenPTuningModule(cfg, train_ds, val_ds)
     trainer = pl.Trainer(max_epochs=cfg.num_epochs, accelerator="auto")
     trainer.fit(model)
+
 
 if __name__ == "__main__":
     train_qwen()
