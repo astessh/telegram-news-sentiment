@@ -32,8 +32,6 @@ poetry install
 
 poetry env activate 
 
-dvc init
-
 poetry run dvc init 
 ```
 

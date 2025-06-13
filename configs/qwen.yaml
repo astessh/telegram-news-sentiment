@@ -6,5 +6,5 @@ max_length: 256
 lr: 1e-4
 batch_size: 8
 num_epochs: 1
-train_path: ../data/processed/train.json
-val_path: ../data/processed/val.json
+train_path: data/processed/train.json
+val_path: data/processed/val.json
