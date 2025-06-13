@@ -25,15 +25,16 @@
 ### Установка
 
 ```bash
-# Клонируем репозиторий
 git clone git@github.com:astessh/telegram-news-sentiment.git
 cd telegram-news-sentiment
 
-# Установка poetry-зависимостей
 poetry install
 
-# Активация poetry-окружения
-poetry shell
+poetry env activate 
+
+dvc init
+
+poetry run dvc init 
 ```
 
 
@@ -73,7 +74,7 @@ poetry run python telegram_news_sentiment/preprocessing.py
 ### Запуск обучения baseline-модели
 
 ```bash
-PYTHONPATH=. poetry run python baseline/train.py 
+PYTHONPATH=./telegram_news_sentiment poetry run python telegram_news_sentiment/baseline/train.py
 ```
 Настройка в `configs/baseline.yaml`.
 Результаты сохраняются в `telegram_news_sentiment/baseline/outputs/`.
@@ -82,30 +83,10 @@ PYTHONPATH=. poetry run python baseline/train.py
 ### Запуск обучения Qwen 0.5B
 
 ```bash
-PYTHONPATH=. poetry run python python telegram_news_sentiment/models/train_qwen.py
+PYTHONPATH=./telegram_news_sentiment poetry run python telegram_news_sentiment/qwen/train_qwen.py
 ```
 
 Модель использует: `Qwen/Qwen-0.5B` с адаптацией через Ptune
-
-
-## Inference
-
-Минимальный пример инференса:
-
-```python
-from transformers import AutoTokenizer, AutoModelForSequenceClassification
-import torch
-
-tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen-0.5B")
-model = AutoModelForSequenceClassification.from_pretrained("/path/to/finetuned")
-
-text = "Сегодня в Москве прекрасная погода"
-inputs = tokenizer(text, return_tensors="pt", padding=True, truncation=True)
-outputs = model(**inputs)
-probs = torch.softmax(outputs.logits, dim=-1)
-print("Positive score:", probs[0, 1].item())
-```
-
 
 ## Структура проекта
 
