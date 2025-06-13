@@ -20,14 +20,14 @@
 
 ## Setup
 
-Проект использует [Poetry](https://python-poetry.org/) для управления зависимостями и [Hydra](https://hydra.cc/) для конфигурации. Все основные скрипты находятся в директории `news-sentiment/`.
+Проект использует [Poetry](https://python-poetry.org/) для управления зависимостями и [Hydra](https://hydra.cc/) для конфигурации. Все основные скрипты находятся в директории `telegram_news_sentiment/`.
 
 ### Установка
 
 ```bash
 # Клонируем репозиторий
-git clone <REPO_URL>
-cd news-sentiment
+git clone git@github.com:astessh/telegram-news-sentiment.git
+cd telegram-news-sentiment
 
 # Установка poetry-зависимостей
 poetry install
@@ -54,13 +54,13 @@ poetry shell
 
 можно скачать с помощью
 ```bash
-poetry run python3 news-sentiment/data_loading.py                            
+poetry run python3 telegram_news_sentiment/data_loading.py                            
 ```
 
 Запустить препроцессинг (чистка, токенизация, сплит):
 
 ```bash
-poetry run python news-sentiment/preprocessing.py
+poetry run python telegram_news_sentiment/preprocessing.py
 ```
 
 Созданные файлы появятся в `data/processed/`:
@@ -76,13 +76,13 @@ poetry run python news-sentiment/preprocessing.py
 PYTHONPATH=. poetry run python baseline/train.py 
 ```
 Настройка в `configs/baseline.yaml`.
-Результаты сохраняются в `news-sentiment/baseline/outputs/`.
+Результаты сохраняются в `telegram_news_sentiment/baseline/outputs/`.
 
 
 ### Запуск обучения Qwen 0.5B
 
 ```bash
-PYTHONPATH=. poetry run python python news-sentiment/models/train_qwen.py
+PYTHONPATH=. poetry run python python telegram_news_sentiment/models/train_qwen.py
 ```
 
 Модель использует: `Qwen/Qwen-0.5B` с адаптацией через Ptune
@@ -115,7 +115,7 @@ print("Positive score:", probs[0, 1].item())
 ├── data/                 
 │   ├── raw/              # исходные данные
 │   └── processed/        # preprocessed и сплиты
-├── news-sentiment/
+├── telegram_news_sentiment/
 │   ├── baseline/         # TF-IDF baseline
 │   ├── models/           # LLM и p-tuning
 │   ├── outputs/          # сохраненные модели
