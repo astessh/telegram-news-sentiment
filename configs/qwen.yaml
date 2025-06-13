@@ -1,0 +1,10 @@
+model_name_or_path: Qwen/Qwen2.5-0.5B
+peft_type: "p_tuning"
+task_type: "SEQ_CLS"
+num_labels: 2
+max_length: 256
+lr: 1e-4
+batch_size: 8
+num_epochs: 1
+train_path: ../data/processed/train.json
+val_path: ../data/processed/val.json

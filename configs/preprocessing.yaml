@@ -1,0 +1,14 @@
+text_cleaning:
+  lowercase: true
+  remove_punctuation: true
+  strip: true
+  remove_digits: false
+tokenization:
+  method: simple_split
+input_path: data/raw/data.json
+output_path: data/processed/
+split:
+  test_size: 0.2
+  val_size: 0.1
+seed: 42
+

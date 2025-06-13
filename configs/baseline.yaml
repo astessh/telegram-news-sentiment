@@ -1,0 +1,10 @@
+data:
+  train: ../data/processed/train.json
+  test: ../data/processed/test.json
+
+model:
+  output_path: models/
+  max_features: 10000
+  ngrams: 2
+  C: 1.0
+  max_iter: 100
