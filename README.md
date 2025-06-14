@@ -17,6 +17,21 @@
 
 (нейтральные (`0.5`) учитываются только на этапе аннотации и убираются в baseline'е)
 
+## Структура проекта
+
+```
+.
+├── configs/               # hydra-конфиги
+├── data/
+│   ├── raw/              # исходные данные
+│   └── processed/        # preprocessed и сплиты
+├── telegram_news_sentiment/
+│   ├── baseline/         # TF-IDF baseline
+│   ├── models/           # LLM и p-tuning
+│   ├── outputs/          # сохраненные модели
+│   └── qwen/             # сохраненные модели
+```
+
 ## Setup
 
 Проект использует [Poetry](https://python-poetry.org/) для управления зависимостями и [Hydra](https://hydra.cc/) для конфигурации. Все основные скрипты находятся в директории `telegram_news_sentiment/`.
@@ -83,18 +98,3 @@ PYTHONPATH=./telegram_news_sentiment poetry run python telegram_news_sentiment/q
 ```
 
 Модель использует: `Qwen/Qwen-0.5B` с адаптацией через Ptune
-
-## Структура проекта
-
-```
-.
-├── configs/               # hydra-конфиги
-├── data/
-│   ├── raw/              # исходные данные
-│   └── processed/        # preprocessed и сплиты
-├── telegram_news_sentiment/
-│   ├── baseline/         # TF-IDF baseline
-│   ├── models/           # LLM и p-tuning
-│   ├── outputs/          # сохраненные модели
-│   └── qwen/             # сохраненные модели
-```
